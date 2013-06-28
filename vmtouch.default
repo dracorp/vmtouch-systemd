@@ -1,0 +1,6 @@
+# vmtouch options
+# The option '-d' must be to run as a daemon.
+# see man vmtouch
+VMTOUCHD_OPT='-dl'
+# the PIDs of vmtouch processes
+PIDS_FILE='/run/vmtouch.pid'
