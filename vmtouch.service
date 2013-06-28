@@ -5,7 +5,6 @@ After=syslog.target
 [Service]
 Type=forking
 PIDFile=/run/vmtouch.pid
-EnvironmentFile=/etc/default/vmtouch.conf
 ExecStart=/usr/lib/systemd/scripts/vmtouch start
 ExecReload=/usr/lib/systemd/scripts/vmtouch reload
 ExecStop=/usr/lib/systemd/scripts/vmtouch stop
