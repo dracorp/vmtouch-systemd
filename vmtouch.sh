@@ -58,18 +58,25 @@ start (){ #{{{
         if [[ "$line" =~ ^'#' || "$line" =~ ^$ ]]; then
             continue
         fi
-        # pids of vmtouch processes
-        prepid=$(pidof vmtouch)
-        vmtouch $VMTOUCHD_OPT $line 
-        if [ $? == 1 ]; then
+        if [ -f "$line" -o -d "$line" -o -L "$line" ]; then
+            # pids of vmtouch processes
+            prepid=$(pidof vmtouch)
+            vmtouch $VMTOUCHD_OPT $line 
+            if [ $? == 1 ]; then
+                continue
+            fi
+            # pids of vmtouch processes + the newest
+            postpid=$(pidof vmtouch)
+            # Apped last the newest pid of vmtouch to the pids file.
+            pid=${postpid%$prepid}
+            if [ -n "$pid" ]; then
+                echo -e "$pid\n" >> $PIDS_FILE
+                if [ $? == 1 ]; then
+                    die_error "The file '$PIDS_FILE' isn't writeable."
+                fi
+            fi
+        else
             continue
-        fi
-        # pids of vmtouch processes + the newest
-        postpid=$(pidof vmtouch)
-        # Apped last the newest pid of vmtouch to the pids file.
-        echo -e "${postpid%$prepid}\n" >> $PIDS_FILE
-        if [ $? == 1 ]; then
-            die_error "The file $PIDS_FILE isn't writeable."
         fi
     done < $VMTOUCH_CONF
 } # ----------  end of function start  ----------}}}
